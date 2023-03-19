@@ -1,44 +1,104 @@
 {
-    "$id": "https://com.vinicreates.utils/health/millis-per-decis/v0.1",
+    "$id": "https://com.vinicreates.utils/health/millis-per-decis/v0.2",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "description": "A representation of a person, company, organization, or place",
+    "description": "Daily journal entry schema",
     "title": "Daily Entry",
     "type": "object",
     "properties": {
         "date": {
-            "description": "The date of entry",
-            "type": "string"
+            "type": "string",
+            "description": "Date of entry"
         },
-        "entries": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "allOf": [
-                    { "$ref": "#/$defs/time" },
-                    { "$ref": "#/$defs/reading" },
-                    { "$ref": "#/$defs/readingTypeEnum" }
-                ]
-            },
-            "meals": {
-                "type": "array",
-                "items": {
-                    "allOf": [
-                        { "$ref": "#/$defs/mealType" },
-                        { "$ref": "#/$defs/mealDescription" }
-                    ]
-                }
+        "entry": {
+            "type": "object",
+            "properties": {
+                "reading": { "$ref": "#/$defs/readingType" },
+                "entry": { "$ref": "#/$defs/readingType" },
+                "meal": { "$ref": "#/$defs/mealType" },
+                "exercise": { "$ref": "#/$defs/exercise" }
             }
         }
     },
+    "required": [ "date", "entry" ],
     "$defs": {
         "time": {
             "description": "The time of entry",
             "type": "string"
         },
         "readingType": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 300
+            "type": "object",
+            "properties": {
+                "readingType": {
+                    "$ref": "#/$defs/readingTypeEnum"
+                },
+                "time": {
+                    "type": "string",
+                    "description": "Time of the reading"
+                },
+                "reading": {
+                    "type": "integer",
+                    "description": "Actual reading"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Additional notes/details"
+                }
+            },
+            "required": [ "time", "reading" ]
+        },
+        "mealType": {
+            "type": "object",
+            "properties": {
+                "meal": {
+                    "$ref": "#/$defs/mealEnum",
+                    "description": "What type of meal (see enum for possible values)"
+                },
+                "taken": {
+                    "type": "boolean",
+                    "description": "Meal taken or not"
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Describe the meal eaten"
+                }
+            }
+        },
+        "exercise": {
+            "exercised": {
+                "type": "boolean",
+                "description": "Did you exercise today?"
+            },
+            "time": {
+                "type": "string",
+                "description": "Time when exercised"
+            },
+            "durationInMinutes": {
+                "type": "integer",
+                "description": "Duration of the exercise in minutes"
+            },
+            "description": {
+                "type": "string",
+                "description": "Describe the exercise?"
+            },
+            "notes": {
+                "type": "string",
+                "description": "Additional notes/details"
+            }
+        },
+        "dayNotes": {
+            "type": "string",
+            "description": "Notes that apply for the whole day"
+        },
+        "mealEnum": {
+            "type": "string",
+            "enum": [
+                "BREAKFAST",
+                "MID DAY SNACK",
+                "LUNCH",
+                "EVENING SNACK",
+                "DINNER",
+                "OTHER"
+            ]
         },
         "readingTypeEnum": {
             "type": "string",
@@ -53,31 +113,6 @@
                 "AT_BED_TIME",
                 "RANDOM"
             ]
-        },
-        "readingRecord": {
-            "type": "object",
-            "properties": {
-                "reading": {
-                    "$ref": "#/$defs/readingType"
-                }
-            }
-        },
-        "mealType": {
-            "type": "string",
-            "enum": [
-                "BREAKFAST",
-                "MID_DAY_SNACK",
-                "LUNCH",
-                "EVENING_SNACK",
-                "DINNER",
-                "OTHER"
-            ]
-        },
-        "mealDescription": {
-            "type": "string"
-        },
-        "notes": {
-            "type": "string"
         }
     }
 }
